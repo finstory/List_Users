@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html
+  xmlns:th="http://www.thymeleaf.org"
+  xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+>
+  <!-- Agregar primero las dependecias, luego cargamos el TL security. Después, usamos este comando en las etiquetas para que solo sean vistas por los q tegan el privilegio de los que elijamos:
+    sec:authorize="hasRole('ROLE_ADMIN')"-->
+  <head>
+    <title>Inicio</title>
+    <meta charset="UTF-8" />
+  </head>
+  <body bgcolor="black" style="color: aliceblue">
+    <img
+      src="https://i.ibb.co/Q61sncP/2017-10-17-06-07-06-1100x619.jpg"
+      width="100"
+      height="60"
+    />
+    <br />
+    <br />
+
+    <form method="get" action="/agregar" sec:authorize="hasRole('ROLE_ADMIN')">
+      <button type="submit" style="background-color: rgb(40, 64, 141)"
+        ><a style="color: white">Agregar Persona</a>
+      </button>
+    </form>
+    <br />
+    <div th:if="${personas != null and !personas.empty}">
+      <table border="1">
+        <tr>
+          <th>Nombre</th>
+          <th>Apellido</th>
+          <th>Email</th>
+          <th>Teléfono</th>
+          <th sec:authorize="hasRole('ROLE_ADMIN')">Modificar</th>
+          <th sec:authorize="hasRole('ROLE_ADMIN')">Eliminar</th>
+        </tr>
+        <tr th:each="persona : ${personas}">
+          <td th:text="${persona.nombre}">Mostrar Nombre</td>
+          <td th:text="${persona.apellido}">Mostrar Apellido</td>
+          <td th:text="${persona.email}">Mostrar Email</td>
+          <td th:text="${persona.telefono}">Mostrar Teléfono</td>
+          <td sec:authorize="hasRole('ROLE_ADMIN')"
+            ><a
+              th:href="@{/editar/} + ${persona.idPersona}"
+              style="color: cadetblue"
+              >Editar</a
+            ></td
+          >
+
+          <td sec:authorize="hasRole('ROLE_ADMIN')"
+            ><a
+              th:href="@{/eliminar/} + ${persona.idPersona}"
+              style="color: cadetblue"
+              >Eliminar</a
+            ></td
+          >
+        </tr>
+      </table>
+    </div>
+    <div th:if="${personas == null or personas.empty}">
+      La lista de personas está vacía
+    </div>
+    <br />
+    <form method="post" th:action="@{/logout}">
+      <button type="submit" style="background-color: rgb(168, 56, 71)"
+        ><a style="color: white">Cerrar Sesión</a>
+      </button>
+    </form>
+
+    <!-- Con esto vemos quíen es el usuario que logeo y qué roles tiene.-->
+    <div>
+      <b>User:</b> <span sec:authentication="name">Usuario que hizo login</span>
+      <br />
+      <b>Roles:</b>
+      <span sec:authentication="principal.authorities">Roles</span>
+    </div>
+
+    <a th:text="${rol}"> aca </a>
+
+
+
+    <!-- here -->
+
+    <input type="button" id="btn" value="button" />
+
+    <!-- testeada -->
+
+    <h10 id="FirstText">cargar aca</h10>
+
+    <script>
+         let h10 = document.getElementById("FirstText");
+         
+        //  h10.innerHTML = url.object.toString();
+let id = 2;
+        let url = `http://localhost:9090/persona/${id}`;
+
+        function getPosts() {
+    return new Promise(function(resolve, reject) {
+    var req = new XMLHttpRequest();
+        req.open('GET', url);
+
+        req.onload = function() {
+          if (req.status == 200) {
+            resolve(JSON.parse(req.response));
+          }
+          else {
+            reject();
+          }
+        };
+
+        req.send();
+    })
+}
+
+getPosts().then(r =>{
+  name(r.nombre);
+
+  }).catch(() => {
+    console.log('Algo salió mal');
+  });
+
+function name(nombre){
+  console.log(nombre);
+}
+
+
+
+    </script>
+  </body>
+</html>

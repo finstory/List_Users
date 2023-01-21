@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" 
+      xmlns="http://www.w3.org/1999/xhtml">
+    <head>
+        <title>Datos de la Persona</title>
+        <meta charset="UTF-8"/>
+    </head>
+    <body bgcolor="black" style="color: aliceblue;">
+        <IMG SRC="https://i.ibb.co/C8T9cfx/rellenar-formulario.jpg" width="100" height="60">
+            <br>
+            <br>
+        <!--El comando href no redirecciona especificando el vinculo que tienen nuestros metodos en el controlador. -->
+        <form method="get" action="/">
+            <button type="submit"
+             style="background-color: rgb(139, 56, 160)"><a style="color: white;">Regresar</a>
+            </button>
+           </form>
+         <br>
+        <!-- con este comando inyectamos el objeto del formulario en el metodo /guardar. -->
+        <form th:action="@{/guardar}" method="post" th:object="${persona}">
+            <br/>
+            <!-- Creamos un input oculto ("hidden") que solamente va enviar a un valor (no nulo) si recibe la id de la Pers. traida de la base.
+            Con esto nos aseguramos evitar duplicaciones de personas.-->
+            <input type="hidden" name="idPersona" th:field="*{idPersona}" />
+            <label for="nombre">Nombre:</label>
+            <!-- rellenamos el atributo "nombre".-->
+            <input type="text" name="nombre" th:field="*{nombre}"/>
+            
+            <!-- Si contiene errores, entonces el condicional  (#fields.hasErrors("nombre")) se activa, donde ("nombre") hace referencia al <input name="nombre...>. Luego, tenemos la opción de dejar el msj por default, añadiendo  th:errors="*{nombre}", de lo contrario, se mostrará lo que hay en la etiqueta en caso de haber encontrado algún error. -->
+            <span th:if="${#fields.hasErrors('nombre')}" style="color: crimson;">
+                <text style="background-color: rgb(54, 50, 50);">Nombre incorrecto !</text>
+                </span>
+            <br/>
+            <label for="apellido">Apellido:</label>
+            <input type="text" name="apellido" th:field="*{apellido}"/>
+            <br/>
+            <label for="email">Email:</label>
+            <!-- al ser de type = email, verifica que sean emails para enviar-->
+            <input type="email" name="email" th:field="*{email}"/>
+            <br/>
+            <label for="telefono">Teléfono:</label>
+            <input type="tel" name="telefono" th:field="*{telefono}"/>
+            <br/>
+            <!-- Y por último confirmamos añadiendo un botón. Donde "name" es solo una referencia como guía y "value" el nombre del botón. -->
+            <br>
+            <input type="submit" name="guardar" value="Guardar" style="background-color: rgb(28, 163, 145)"/>
+        </form>
+      
+    </body>
+</html>
